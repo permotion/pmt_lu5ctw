@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Calculadora de líneas de transmisión RF — longitudes de onda, fracciones λ, pérdidas e impedancias. LU5CTW RF Lab.">
+  <meta name="theme-color" content="#0d1117">
+  <title>RF Transmission Line Calculator — LU5CTW RF Lab</title>
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/components.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="../../" class="site-logo">
+        <span class="site-logo__title">LU5CTW RF Lab</span>
+        <span class="site-logo__callsign">LU5CTW</span>
+      </a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="../../">Inicio</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="tool-header">
+        <a href="../../" class="tool-header__back">← Volver al laboratorio</a>
+        <h1 class="tool-header__title">RF Transmission Line Calculator</h1>
+        <p class="tool-header__desc">
+          Calculadora agnóstica de líneas de transmisión coaxiales. Cualquier frecuencia, cualquier cable.
+        </p>
+      </div>
+
+      <div class="tool-sections">
+
+        <!-- Sección educativa -->
+        <section class="card card--educational">
+          <h2 class="card__title">
+            <span class="card__title-icon">📚</span>
+            ¿Cómo funciona esta calculadora?
+          </h2>
+          <div class="edu-content">
+            <p>
+              La <strong>longitud de onda en el aire</strong> se calcula mediante:
+            </p>
+            <div class="info-box info-box--formula">
+              <span class="formula">λ = c / f</span>
+              <p style="margin-top: 0.75rem">donde:</p>
+              <ul>
+                <li><strong>λ</strong> = longitud de onda</li>
+                <li><strong>c</strong> = velocidad de la luz (299 792 458 m/s)</li>
+                <li><strong>f</strong> = frecuencia</li>
+              </ul>
+            </div>
+
+            <h3>Longitud de onda en el cable</h3>
+            <p>
+              Para calcular la longitud dentro de un cable coaxial:
+            </p>
+            <div class="info-box info-box--formula">
+              <span class="formula">λ<sub>cable</sub> = λ<sub>aire</sub> × VF</span>
+              <p style="margin-top: 0.75rem">
+                donde <strong>VF</strong> es el factor de velocidad del dieléctrico.
+              </p>
+            </div>
+            <p>
+              Distintos dieléctricos hacen que la onda viaje a distintas velocidades:
+              <strong>PE sólido</strong> (VF ≈ 0.66),
+              <strong>PTFE</strong> (VF ≈ 0.69–0.70) y
+              <strong>Espuma PE</strong> (VF ≈ 0.83–0.88) tienen factores de velocidad diferentes.
+            </p>
+
+            <h3>Dos modos de cálculo</h3>
+            <p>
+              <strong style="color: var(--c-engineering)">Modo Ingeniería:</strong>
+              entrega la longitud exacta según las leyes de la física. Sin márgenes.
+            </p>
+            <p>
+              <strong style="color: var(--c-construction)">Modo Construcción:</strong>
+              entrega una longitud recomendada para comenzar a fabricar una antena,
+              agregando un margen configurable (10% por defecto), facilitando el ajuste
+              posterior mediante un NanoVNA.
+            </p>
+
+            <div id="edu-example"></div>
+          </div>
+        </section>
+
+        <!-- Modo de cálculo -->
+        <section class="card">
+          <h2 class="card__title">Modo de cálculo</h2>
+          <div class="mode-toggle" role="group" aria-label="Modo de cálculo">
+            <button type="button" class="mode-toggle__btn mode-toggle__btn--active" data-mode="engineering">
+              Modo Ingeniería
+            </button>
+            <button type="button" class="mode-toggle__btn" data-mode="construction">
+              Modo Construcción
+            </button>
+          </div>
+
+          <div id="margin-section" hidden style="margin-top: 1.25rem">
+            <p class="form-label" style="margin-bottom: 0.5rem">Margen de construcción</p>
+            <div class="chip-group" id="margin-chips"></div>
+            <div class="form-group" style="margin-top: 0.75rem; max-width: 200px">
+              <label class="form-label" for="custom-margin">Margen personalizado (%)</label>
+              <input type="number" id="custom-margin" class="form-input form-input--mono" value="10" min="0" max="100" step="0.1">
+            </div>
+            <div class="info-box info-box--construction" style="margin-top: 1rem">
+              El margen adicional <strong>no modifica la física</strong>. Es una recomendación práctica
+              para construir antenas ligeramente más largas y posteriormente ajustarlas con un NanoVNA.
+              Es mucho más sencillo recortar material que agregarlo.
+            </div>
+          </div>
+        </section>
+
+        <!-- Entradas: Frecuencia y Cable -->
+        <section class="card">
+          <h2 class="card__title">Parámetros de entrada</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="frequency-preset">Preset de frecuencia</label>
+              <select id="frequency-preset" class="form-select"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="frequency">Frecuencia</label>
+              <div class="input-with-unit">
+                <input type="number" id="frequency" class="form-input form-input--mono" value="922.125" step="any" min="0">
+                <select id="frequency-unit" class="form-select">
+                  <option value="Hz">Hz</option>
+                  <option value="kHz">kHz</option>
+                  <option value="MHz" selected>MHz</option>
+                  <option value="GHz">GHz</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cable-type">Tipo de cable</label>
+              <select id="cable-type" class="form-select"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="z0">
+                Impedancia característica Z₀ (Ω)
+              </label>
+              <input type="number" id="z0" class="form-input form-input--mono" value="50" step="any" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="vf" id="explain-vf">
+                Factor de velocidad (VF)
+              </label>
+              <input type="number" id="vf" class="form-input form-input--mono" value="0.695" step="any" min="0" max="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="attenuation">Atenuación típica (dB/m)</label>
+              <input type="number" id="attenuation" class="form-input form-input--mono" value="0.35" step="any" min="0">
+            </div>
+          </div>
+        </section>
+
+        <!-- Resultados principales -->
+        <section class="card">
+          <h2 class="card__title">Resultados</h2>
+          <div class="results-grid" id="results-grid"></div>
+          <div style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem">
+            <span class="form-label" id="explain-wavelength-air">λ aire</span>
+            <span class="form-label" id="explain-wavelength-cable">λ cable</span>
+            <span class="form-label" id="explain-velocity">Velocidad</span>
+            <span class="form-label" id="explain-delay">Retardo</span>
+            <span class="form-label" id="explain-degrees">Grados</span>
+          </div>
+        </section>
+
+        <!-- Tabla de fracciones -->
+        <section class="card">
+          <h2 class="card__title">Tabla de fracciones de λ</h2>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Fracción</th>
+                  <th>Longitud exacta</th>
+                  <th>Longitud construcción</th>
+                  <th>Grados</th>
+                  <th>Comentario técnico</th>
+                </tr>
+              </thead>
+              <tbody id="fraction-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Análisis inverso -->
+        <section class="card">
+          <h2 class="card__title">
+            Análisis de longitud ingresada
+            <span id="explain-reverse"></span>
+          </h2>
+          <div class="form-grid" style="margin-bottom: 1rem">
+            <div class="form-group">
+              <label class="form-label" for="input-length">Longitud física</label>
+              <div class="input-with-unit">
+                <input type="number" id="input-length" class="form-input form-input--mono" placeholder="ej. 5.65" step="any" min="0">
+                <select id="input-length-unit" class="form-select">
+                  <option value="m">m</option>
+                  <option value="cm" selected>cm</option>
+                  <option value="mm">mm</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="reverse-results"></div>
+        </section>
+
+        <!-- Pérdidas -->
+        <section class="card">
+          <h2 class="card__title">
+            Pérdidas en el cable
+            <span id="explain-loss"></span>
+          </h2>
+          <div class="form-grid" style="margin-bottom: 1rem">
+            <div class="form-group">
+              <label class="form-label" for="loss-length">Longitud del tramo (m)</label>
+              <input type="number" id="loss-length" class="form-input form-input--mono" placeholder="ej. 10" step="any" min="0">
+            </div>
+          </div>
+          <div id="loss-results"></div>
+        </section>
+
+        <!-- Impedancias -->
+        <section class="card">
+          <h2 class="card__title">Impedancias</h2>
+          <div class="form-grid" style="margin-bottom: 1rem">
+            <div class="form-group">
+              <label class="form-label" for="impedance-r">R — parte real (Ω)</label>
+              <input type="number" id="impedance-r" class="form-input form-input--mono" value="50" step="any">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="impedance-x">X — parte imaginaria (Ω)</label>
+              <input type="number" id="impedance-x" class="form-input form-input--mono" value="0" step="any">
+            </div>
+          </div>
+          <div id="impedance-results"></div>
+          <div style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem">
+            <span class="form-label" id="explain-gamma">Γ</span>
+            <span class="form-label" id="explain-rl">Return Loss</span>
+            <span class="form-label" id="explain-vswr">VSWR</span>
+          </div>
+        </section>
+
+        <!-- Sello filosófico -->
+        <div class="philosophy-stamp">
+          Las fórmulas utilizadas muestran siempre el valor físico exacto. Los valores del Modo Construcción
+          son recomendaciones prácticas para facilitar el ajuste con instrumental como NanoVNA.
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <strong>LU5CTW RF Lab</strong> — Distintiva <a href="https://www.qrz.com/db/LU5CTW" target="_blank" rel="noopener">LU5CTW</a>
+      </p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { populateSelects, initTransmissionLineApp } from '../../js/modules/transmission-line/app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      populateSelects();
+      initTransmissionLineApp();
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('../../sw.js').catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>

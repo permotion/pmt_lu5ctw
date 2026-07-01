@@ -1,0 +1,176 @@
+/* LU5CTW RF Lab — Layout */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.site-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-decoration: none;
+}
+
+.site-logo:hover {
+  text-decoration: none;
+}
+
+.site-logo__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--c-accent);
+  letter-spacing: 0.02em;
+}
+
+.site-logo__callsign {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--c-text-muted);
+  letter-spacing: 0.15em;
+}
+
+.site-nav a {
+  font-size: 0.875rem;
+  color: var(--c-text-muted);
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), color var(--transition);
+}
+
+.site-nav a:hover {
+  color: var(--c-text);
+  background: var(--c-bg-elevated);
+  text-decoration: none;
+}
+
+main {
+  flex: 1;
+  padding: 2rem 0 3rem;
+}
+
+.site-footer {
+  border-top: 1px solid var(--c-border);
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--c-text-dim);
+}
+
+.site-footer a {
+  color: var(--c-text-muted);
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 2rem 0 2.5rem;
+}
+
+.hero__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--c-text) 0%, var(--c-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero__subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--c-accent);
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.hero__description {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* Tool grid */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+/* Tool page */
+.tool-header {
+  margin-bottom: 2rem;
+}
+
+.tool-header__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.tool-header__back:hover {
+  color: var(--c-link);
+  text-decoration: none;
+}
+
+.tool-header__title {
+  font-size: clamp(1.4rem, 3vw, 1.85rem);
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.tool-header__desc {
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+}
+
+.tool-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .site-header .container {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  .site-header {
+    height: auto;
+    position: relative;
+  }
+
+  main {
+    padding: 1.25rem 0 2rem;
+  }
+}
