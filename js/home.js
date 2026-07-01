@@ -8,26 +8,14 @@ function renderToolCards() {
   const grid = document.getElementById('tools-grid');
   if (!grid) return;
 
-  grid.innerHTML = TOOLS.map((tool) => {
-    if (tool.available) {
-      return `
-        <a href="${tool.path}" class="tool-card">
-          <div class="tool-card__icon">${tool.icon}</div>
-          <div class="tool-card__title">${tool.title}</div>
-          <div class="tool-card__desc">${tool.description}</div>
-          <span class="tool-card__badge">Disponible</span>
-        </a>
-      `;
-    }
-    return `
-      <div class="tool-card tool-card--disabled">
-        <div class="tool-card__icon">${tool.icon}</div>
-        <div class="tool-card__title">${tool.title}</div>
-        <div class="tool-card__desc">${tool.description}</div>
-        <span class="tool-card__badge tool-card__badge--soon">Próximamente</span>
-      </div>
-    `;
-  }).join('');
+  grid.innerHTML = TOOLS.map((tool) => `
+    <a href="${tool.path}" class="tool-card">
+      <div class="tool-card__icon">${tool.icon}</div>
+      <div class="tool-card__title">${tool.title}</div>
+      <div class="tool-card__desc">${tool.description}</div>
+      <span class="tool-card__badge">Disponible</span>
+    </a>
+  `).join('');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
